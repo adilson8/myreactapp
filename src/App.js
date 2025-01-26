@@ -1,5 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
+import {useState} from 'react';
 
 function Header(props){
   return  <header>
@@ -21,7 +21,7 @@ function Nav(props){
       <li key={t.id}>
         <a id={t.id} href={"/read/" + t.id} onClick={(event)=>{
           event.preventDefault();
-          props.customFunc(event.target.id);
+          props.customFunc(Number(event.target.id));
         }}> {t.title} </a>
       </li>
     );
@@ -42,23 +42,44 @@ function Article(props){
 }
 
 function App() {
+  const[mode, setMode] = useState('WELCOME');
+  const[id, setId] = useState(null);
+
   const topics = [
     {id:1, title:'html', body:'html is ...'},
     {id:2, title:'css', body:'css is ...'},
     {id:3, title:'javascript', body:'javascript is ...'}
   ]
 
+  let content = null
+  if (mode === 'WELCOME') {
+    content = <Article title="Welcome" body="Hello, WEB"></Article>;
+  } else if (mode === 'READ'){
+    let title = null;
+    let body = null;
+
+    topics.forEach(topic => {
+      if (topic.id === id){
+        title = topic.title;
+        body = topic.body;
+      }
+    });
+
+    content = <Article title={title} body={body}></Article>;
+  }
+
   return (
     <div>
       <Header title="WEB" customFunc={()=>{
-        alert('title을 클릭했군요');
+        setMode('WELCOME');
       }}></Header>
 
-      <Nav topics={topics} customFunc={(id)=>{
-        alert(id);
+      <Nav topics={topics} customFunc={(_id)=>{
+        setMode('READ');
+        setId(_id);
       }}></Nav>
       
-      <Article title="Welcome" body="Hello, WEB"></Article>
+      {content}
     </div>
   );
 }
