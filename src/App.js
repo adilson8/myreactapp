@@ -61,12 +61,12 @@ function Create(props){
 function App() {
   const[mode, setMode] = useState('WELCOME');
   const[id, setId] = useState(null);
-
   const [topics, setTopics] = useState([
     {id:1, title:'html', body:'html is ...'},
     {id:2, title:'css', body:'css is ...'},
     {id:3, title:'javascript', body:'javascript is ...'}
   ]);
+  const [nextId, setNextId] = useState(topics.length+1);
 
   let content = null
   if (mode === 'WELCOME') {
@@ -87,13 +87,15 @@ function App() {
     content = <Create onCreate={(_title, _body)=>{
       console.log(_title, _body);
       let newTopic = {
-        id : topics.length+1,
+        id : nextId,
         title : _title,
         body : _body
       };
-      topics.push(newTopic);
-      setTopics(topics);
-      setMode('WELCOME');
+
+      let newTopics = [...topics];
+      newTopics.push(newTopic);
+      setTopics(newTopics);
+      
     }}></Create>;
   }
 
