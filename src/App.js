@@ -41,15 +41,32 @@ function Article(props){
   </article>
 }
 
+
+function Create(props){
+  return <article>
+    <h2>Create</h2>
+    <form onSubmit={(event)=>{
+      event.preventDefault();
+      const title = event.target.title.value;
+      const body = event.target.body.value;
+      props.onCreate(title, body);
+    }}>
+      <p><input type="text" name="title" placeholder='제목을 입력하세요.'></input></p>
+      <p><textarea name="body" placeholder='본문을 입력하세요.'></textarea></p>
+      <p><input type="submit" value="등록"></input></p>
+    </form>
+  </article>
+}
+
 function App() {
   const[mode, setMode] = useState('WELCOME');
   const[id, setId] = useState(null);
 
-  const topics = [
+  const [topics, setTopics] = useState([
     {id:1, title:'html', body:'html is ...'},
     {id:2, title:'css', body:'css is ...'},
     {id:3, title:'javascript', body:'javascript is ...'}
-  ]
+  ]);
 
   let content = null
   if (mode === 'WELCOME') {
@@ -66,6 +83,18 @@ function App() {
     });
 
     content = <Article title={title} body={body}></Article>;
+  } else if(mode === 'CREATE'){
+    content = <Create onCreate={(_title, _body)=>{
+      console.log(_title, _body);
+      let newTopic = {
+        id : topics.length+1,
+        title : _title,
+        body : _body
+      };
+      topics.push(newTopic);
+      setTopics(topics);
+      setMode('WELCOME');
+    }}></Create>;
   }
 
   return (
@@ -80,6 +109,11 @@ function App() {
       }}></Nav>
       
       {content}
+
+      <a href="/create" onClick={(e)=>{
+        e.preventDefault();
+        setMode('CREATE');
+      }}>Create</a>
     </div>
   );
 }
