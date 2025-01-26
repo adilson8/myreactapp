@@ -2,12 +2,12 @@ import logo from './logo.svg';
 import './App.css';
 
 function Header(props){
-  // console.log(props);
-  // console.log(props.title);
-
   return  <header>
     <h1>
-      <a href="/">{props.title}</a>
+      <a href="/" onClick={(event)=>{
+        event.preventDefault();
+        props.customFunc();
+      }}>{props.title}</a>
     </h1>
   </header>
 }
@@ -17,16 +17,19 @@ function Nav(props){
 
   for (let i = 0; i < props.topics.length; i++){
     let t = props.topics[i];
-    lis.push(<li key={t.id}><a href={"/read/" + t.id}>  {t.title} </a></li>);
+    lis.push(
+      <li key={t.id}>
+        <a id={t.id} href={"/read/" + t.id} onClick={(event)=>{
+          event.preventDefault();
+          props.customFunc(event.target.id);
+        }}> {t.title} </a>
+      </li>
+    );
   }
-
-  lis.forEach(element => {
-    console.log(element);
-  });
 
   return <nav>
     <ol>
-      {lis}     
+      {lis}
     </ol>        
   </nav>
 }
@@ -38,7 +41,6 @@ function Article(props){
   </article>
 }
 
-
 function App() {
   const topics = [
     {id:1, title:'html', body:'html is ...'},
@@ -48,9 +50,13 @@ function App() {
 
   return (
     <div>
-      <Header title="WEB" name="test" id="test2"></Header>
+      <Header title="WEB" customFunc={()=>{
+        alert('title을 클릭했군요');
+      }}></Header>
 
-      <Nav topics={topics}></Nav>
+      <Nav topics={topics} customFunc={(id)=>{
+        alert(id);
+      }}></Nav>
       
       <Article title="Welcome" body="Hello, WEB"></Article>
     </div>
