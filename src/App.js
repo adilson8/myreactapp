@@ -177,6 +177,8 @@ function App() {
       setMode('READ');
     }}></Update>
 
+  } else if (mode === 'DELETE') {
+
   }
 
   return (
