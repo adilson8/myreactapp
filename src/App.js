@@ -76,13 +76,7 @@ function Update(props){
       <p><textarea name="body" placeholder='본문을 입력하세요.' value={body} onChange={(e)=>{
         setBody(e.target.value);
       }}></textarea></p>
-      <div>
-        <input type="submit" value="수정"></input>
-
-        <input type="button" value="삭제" style={{ marginLeft: "10px" }} onClick={(e)=>{
-          props.onDelete(title);
-        }}></input>
-      </div>
+      <input type="submit" value="수정"></input>
     </form>
   </article>
 }
@@ -98,7 +92,7 @@ function App() {
   const [nextId, setNextId] = useState(topics.length+1);
 
   let content = null;
-  let update = null;
+  let contextControl = null;
   if (mode === 'WELCOME') {
     content = <Article title="Welcome" body="Hello, WEB"></Article>;
   } else if (mode === 'READ'){
@@ -113,10 +107,26 @@ function App() {
     });
 
     content = <Article title={title} body={body}></Article>;
-    update = <li><a href={'/update/' + id} onClick={(event)=>{
+    contextControl = <>
+    <li><a href={'/update/' + id} onClick={(event)=>{
       event.preventDefault();
       setMode('UPDATE');
     }}>Update</a></li>
+    <li>
+      <input type="button" value="Delete" onClick={()=>{
+        const newTopics = [];
+
+        for (let i = 0; i < topics.length; i++){
+          if (topics[i].id != id){
+            newTopics.push(topics[i]);
+          }
+        }
+
+        setTopics(newTopics);
+        setMode('WELCOME');
+      }}></input>
+    </li>
+    </>
   } else if(mode === 'CREATE'){
     content = <Create onCreate={(_title, _body)=>{
       console.log(_title, _body);
@@ -181,29 +191,6 @@ function App() {
       
       setTopics(newTopics);
       setMode('READ');
-    }}
-    
-    onDelete={(title)=>{
-      let newTopics = [];
-
-      topics.forEach((topic)=>{
-        if (topic.title !== title){
-          newTopics.push(topic);
-        }
-      });
-
-      for (let i = 0; i < newTopics.length; i++){
-        newTopics[i].id = i;
-      }
-
-      /* eslint-disable-next-line no-restricted-globals */
-      if (confirm(title + '을 삭제하시겠습니까?')){
-        setTopics(newTopics);
-        setMode('WELCOME');
-      } else {
-        alert('취소되었습니다.');
-      }
-
     }}></Update>
 
   }
@@ -229,7 +216,7 @@ function App() {
           }}>Create</a>
         </li>
 
-        {update}
+        {contextControl}
       </ul>
     </div>
   );
