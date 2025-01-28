@@ -99,7 +99,6 @@ function App() {
 
   let content = null;
   let update = null;
-  let Delete = null;
   if (mode === 'WELCOME') {
     content = <Article title="Welcome" body="Hello, WEB"></Article>;
   } else if (mode === 'READ'){
@@ -118,10 +117,6 @@ function App() {
       event.preventDefault();
       setMode('UPDATE');
     }}>Update</a></li>
-    Delete = <li><a href={'/delete/' + id} onClick={(event)=>{
-      event.preventDefault();
-      setMode('DELETE');
-    }}>Delete</a></li>
   } else if(mode === 'CREATE'){
     content = <Create onCreate={(_title, _body)=>{
       console.log(_title, _body);
@@ -201,10 +196,14 @@ function App() {
         newTopics[i].id = i;
       }
 
-      alert(title + '을 삭제합니다.');
+      /* eslint-disable-next-line no-restricted-globals */
+      if (confirm(title + '을 삭제하시겠습니까?')){
+        setTopics(newTopics);
+        setMode('WELCOME');
+      } else {
+        alert('취소되었습니다.');
+      }
 
-      setTopics(newTopics);
-      setMode('WELCOME');
     }}></Update>
 
   }
