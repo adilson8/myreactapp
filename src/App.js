@@ -81,6 +81,17 @@ function Update(props){
   </article>
 }
 
+function Delete2(props){
+  const [title, setTitle] = useState(props.title);
+  const [body, setBody] = useState(props.body);
+  
+  return <article>
+    <h2>Delete</h2>
+    <p>{title}</p>
+    <p>{body}</p>
+  </article>
+}
+
 function App() {
   const[mode, setMode] = useState('WELCOME');
   const[id, setId] = useState(null);
@@ -91,8 +102,9 @@ function App() {
   ]);
   const [nextId, setNextId] = useState(topics.length+1);
 
-  let content = null
-  let update = null
+  let content = null;
+  let update = null;
+  let Delete = null;
   if (mode === 'WELCOME') {
     content = <Article title="Welcome" body="Hello, WEB"></Article>;
   } else if (mode === 'READ'){
@@ -111,6 +123,10 @@ function App() {
       event.preventDefault();
       setMode('UPDATE');
     }}>Update</a></li>
+    Delete = <li><a href={'/delete/' + id} onClick={(event)=>{
+      event.preventDefault();
+      setMode('DELETE');
+    }}>Delete</a></li>
   } else if(mode === 'CREATE'){
     content = <Create onCreate={(_title, _body)=>{
       console.log(_title, _body);
@@ -178,7 +194,17 @@ function App() {
     }}></Update>
 
   } else if (mode === 'DELETE') {
+    let title = null;
+    let body = null;
 
+    topics.forEach((topic)=>{
+      if (topic.id === id){
+        title = topic.title;
+        body = topic.body;
+      }
+    });
+    
+    content = <Delete2 title={title} body={body}></Delete2>;
   }
 
   return (
@@ -203,6 +229,7 @@ function App() {
         </li>
 
         {update}
+        {Delete}
       </ul>
     </div>
   );
