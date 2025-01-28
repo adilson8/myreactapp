@@ -76,19 +76,14 @@ function Update(props){
       <p><textarea name="body" placeholder='본문을 입력하세요.' value={body} onChange={(e)=>{
         setBody(e.target.value);
       }}></textarea></p>
-      <p><input type="submit" value="수정"></input></p>
-    </form>
-  </article>
-}
+      <div>
+        <input type="submit" value="수정"></input>
 
-function Delete2(props){
-  const [title, setTitle] = useState(props.title);
-  const [body, setBody] = useState(props.body);
-  
-  return <article>
-    <h2>Delete</h2>
-    <p>{title}</p>
-    <p>{body}</p>
+        <input type="button" value="삭제" style={{ marginLeft: "10px" }} onClick={(e)=>{
+          props.onDelete(title);
+        }}></input>
+      </div>
+    </form>
   </article>
 }
 
@@ -191,20 +186,27 @@ function App() {
       
       setTopics(newTopics);
       setMode('READ');
+    }}
+    
+    onDelete={(title)=>{
+      let newTopics = [];
+
+      topics.forEach((topic)=>{
+        if (topic.title !== title){
+          newTopics.push(topic);
+        }
+      });
+
+      for (let i = 0; i < newTopics.length; i++){
+        newTopics[i].id = i;
+      }
+
+      alert(title + '을 삭제합니다.');
+
+      setTopics(newTopics);
+      setMode('WELCOME');
     }}></Update>
 
-  } else if (mode === 'DELETE') {
-    let title = null;
-    let body = null;
-
-    topics.forEach((topic)=>{
-      if (topic.id === id){
-        title = topic.title;
-        body = topic.body;
-      }
-    });
-    
-    content = <Delete2 title={title} body={body}></Delete2>;
   }
 
   return (
@@ -229,7 +231,6 @@ function App() {
         </li>
 
         {update}
-        {Delete}
       </ul>
     </div>
   );
